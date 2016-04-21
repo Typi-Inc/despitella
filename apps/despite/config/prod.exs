@@ -19,6 +19,9 @@ config :despite, Despite.Endpoint,
 # Do not print debug messages in production
 config :logger, level: :info
 
+config :despite, :randomizer, Despite.Randomizer
+config :despite, :twilio_api, Despite.ExTwilio
+
 # ## SSL Support
 #
 # To get SSL working, you will need to add the `https` key

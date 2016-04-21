@@ -15,12 +15,13 @@ defmodule Despite.Router do
 
   scope "/", Despite do
     pipe_through :browser # Use the default browser stack
-
     get "/", PageController, :index
   end
 
   # Other scopes may use custom stacks.
-  # scope "/api", Despite do
-  #   pipe_through :api
-  # end
+  scope "/api", Despite do
+    pipe_through :api
+    post "/verify_phone_number", UserController, :verify_phone_number
+    resources "/users", UserController, only: [:create]
+  end
 end

@@ -17,3 +17,6 @@ config :despite, Despite.Repo,
   database: "despite_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
+
+config :despite, :randomizer, Despite.RandomizerStub
+config :despite, :twilio_api, Despite.ExTwilioStub

@@ -40,3 +40,6 @@ config :despite, Despite.Repo,
   database: "despite_dev",
   hostname: "localhost",
   pool_size: 10
+
+config :despite, :randomizer, Despite.Randomizer
+config :despite, :twilio_api, Despite.ExTwilio
