@@ -9,9 +9,6 @@ defmodule Despite.Verification do
     timestamps
   end
 
-  @required_fields ~w(phone_number code)
-  @optional_fields ~w()
-
   @doc """
   Creates a changeset based on the `model` and `params`.
 
@@ -20,7 +17,8 @@ defmodule Despite.Verification do
   """
   def changeset(model, params \\ :empty) do
     model
-    |> cast(params, @required_fields, @optional_fields)
+    |> cast(params, [:phone_number, :code])
+    |> validate_required([:phone_number, :code])
     |> validate_format(:phone_number, ~r/^[0-9\+][0-9]{9,15}$/)
     |> put_pass_hash
     |> unique_constraint(:phone_number)

@@ -20,7 +20,7 @@ config :despite, Despite.Endpoint,
 config :logger, level: :info
 
 config :despite, :randomizer, Despite.Randomizer
-config :despite, :twilio_api, Despite.ExTwilio
+config :despite, :twilio_api, ExTwilio
 
 # ## SSL Support
 #

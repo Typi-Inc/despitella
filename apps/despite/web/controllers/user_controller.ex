@@ -24,6 +24,7 @@ defmodule Despite.UserController do
   defp save_and_send_code(conn, nil, phone_number, code) do
     changeset = Verification.changeset(%Verification{},
       %{phone_number: phone_number, code: code})
+    IO.puts "#{inspect changeset}"
     case Repo.insert(changeset) do
       {:ok, verification} ->
         send_code(phone_number, code)

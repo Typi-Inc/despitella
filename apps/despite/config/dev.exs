@@ -42,4 +42,4 @@ config :despite, Despite.Repo,
   pool_size: 10
 
 config :despite, :randomizer, Despite.Randomizer
-config :despite, :twilio_api, Despite.ExTwilio
+config :despite, :twilio_api, ExTwilio

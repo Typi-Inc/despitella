@@ -9,9 +9,6 @@ defmodule Despite.User do
     timestamps
   end
 
-  @required_fields ~w(phone_number)
-  @optional_fields ~w(username gender)
-
   @doc """
   Creates a changeset based on the `model` and `params`.
 
@@ -20,7 +17,8 @@ defmodule Despite.User do
   """
   def changeset(model, params \\ :empty) do
     model
-    |> cast(params, @required_fields, @optional_fields)
+    |> cast(params, [:phone_number, :username, :gender])
+    |> validate_required([:phone_number])
     |> validate_length(:username, min: 6, max: 100)
     |> unique_constraint(:phone_number)
   end

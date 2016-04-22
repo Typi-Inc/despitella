@@ -25,11 +25,12 @@ defmodule Despite.ErrorHelpers do
     # this could be written simply as:
     #
     #     dngettext "errors", "1 file", "%{count} files", count
+    #     dgettext "errors", "is invalid"
     #
-    Gettext.dngettext(Despite.Gettext, "errors", msg, msg, opts[:count], opts)
-  end
-
-  def translate_error(msg) do
-    Gettext.dgettext(Despite.Gettext, "errors", msg)
+    if count = opts[:count] do
+      Gettext.dgettext(Despite.Gettext, "errors", msg, msg, count, opts)
+    else
+      Gettext.dgettext(Despite.Gettext, "errors", msg, opts)
+    end
   end
 end

@@ -1,5 +1,5 @@
 defmodule Despite.UserControllerTest do
-  use Despite.ConnCase
+  use Despite.ConnCase, async: true
 
   alias Despite.User
   alias Despite.Verification
