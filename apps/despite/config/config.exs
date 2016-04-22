@@ -31,4 +31,5 @@ config :phoenix, :generators,
   binary_id: false
 
 config :ex_twilio, account_sid: System.get_env("TWILIO_ACCOUNT_SID"),
-  auth_token: System.get_env("TWILIO_AUTH_TOKEN")
+  auth_token: System.get_env("TWILIO_AUTH_TOKEN"),
+  phone_number: System.get_env("TWILIO_PHONE_NUMBER")

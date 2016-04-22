@@ -7,6 +7,7 @@ defmodule Despite.UserController do
   @expiration_duration 3600
   @randomizer Application.get_env(:despite, :randomizer)
   @twilio_api Application.get_env(:despite, :twilio_api)
+  @twilio_phone_number Application.get_env(:ex_twilio, :phone_number)
 
   plug :scrub_params, "user" when action in [:create, :verify_phone_number]
 
@@ -56,7 +57,7 @@ defmodule Despite.UserController do
   end
 
   defp send_code(phone_number, code) do
-    @twilio_api.Message.create(to: phone_number, from: "+12014312173", body: code)
+    @twilio_api.Message.create([to: phone_number, from: @twilio_phone_number, body: code])
   end
 
   def create(conn, %{"user" => user_params}) do
