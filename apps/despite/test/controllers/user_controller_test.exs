@@ -32,7 +32,10 @@ defmodule Despite.UserControllerTest do
   test "creates and renders user when data is valid", %{conn: conn} do
     conn = post conn, user_path(conn, :verify_phone_number), user: @valid_attrs
     conn = post conn, user_path(conn, :create), user: Map.put(@valid_attrs, "code", "12345")
-    assert json_response(conn, 201)["data"]["id"]
+    %{"user" => user, "existing_user" => existing_user, "jwt" => jwt} = json_response(conn, 201)
+    assert user["id"]
+    refute existing_user
+    assert jwt
     assert Repo.get_by(User, @valid_attrs)
   end
 
@@ -48,6 +51,18 @@ defmodule Despite.UserControllerTest do
     conn = post conn, user_path(conn, :create), user: Map.put(@valid_attrs, "code", "54321")
     assert json_response(conn, 401)["reason"]
     refute Repo.get_by(User, @valid_attrs)
+  end
+
+  test "if user already exists and data is valid sends existing_user: true" do
+    conn = post conn, user_path(conn, :verify_phone_number), user: @valid_attrs
+    conn = post conn, user_path(conn, :create), user: Map.put(@valid_attrs, "code", "12345")
+    conn = post conn, user_path(conn, :verify_phone_number), user: @valid_attrs
+    conn = post conn, user_path(conn, :create), user: Map.put(@valid_attrs, "code", "12345")
+    %{"user" => user, "existing_user" => existing_user, "jwt" => jwt} = json_response(conn, 200)
+    assert user["id"]
+    assert existing_user
+    assert jwt
+    assert Repo.get_by(User, @valid_attrs)
   end
 
   # test "lists all entries on index", %{conn: conn} do

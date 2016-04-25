@@ -25,7 +25,7 @@ defmodule Despite.UserController do
   defp save_and_send_code(conn, nil, phone_number, code) do
     changeset = Verification.changeset(%Verification{},
       %{phone_number: phone_number, code: code})
-    IO.puts "#{inspect changeset}"
+
     case Repo.insert(changeset) do
       {:ok, verification} ->
         send_code(phone_number, code)
@@ -106,18 +106,31 @@ defmodule Despite.UserController do
   end
 
   def create(conn, _, _, user_params) do
+    existing_user = Repo.get_by(User, %{"phone_number": user_params["phone_number"]})
+    create_or_update(conn, existing_user, user_params)
+  end
+
+  def create_or_update(conn, nil, user_params) do
     changeset = User.changeset(%User{}, user_params)
 
     case Repo.insert(changeset) do
       {:ok, user} ->
+        {:ok, jwt, _full_claims} = Guardian.encode_and_sign(user, :token)
         conn
         |> put_status(:created)
-        |> render("show.json", user: user)
+        |> render("show.json", jwt: jwt, user: user, existing_user: false)
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
         |> render(Despite.ChangesetView, "error.json", changeset: changeset)
     end
+  end
+
+  def create_or_update(conn, user, _user_params) do
+    {:ok, jwt, _full_claims} = Guardian.encode_and_sign(user, :token)
+    conn
+    |> put_status(:ok)
+    |> render("show.json", jwt: jwt, user: user, existing_user: true)
   end
 
   # def show(conn, %{"id" => id}) do

@@ -33,3 +33,12 @@ config :phoenix, :generators,
 config :ex_twilio, account_sid: System.get_env("TWILIO_ACCOUNT_SID"),
   auth_token: System.get_env("TWILIO_AUTH_TOKEN"),
   phone_number: System.get_env("TWILIO_PHONE_NUMBER")
+
+config :guardian, Guardian,
+  issuer: "Despite",
+  ttl: { 1, :day },
+  verify_issuer: true, # optional
+  secret_key: fn ->
+    JOSE.JWK.from_pem_file(System.get_env("GUARDIAN_KEY_FILE"))
+  end,
+  serializer: Despite.GuardianSerializer

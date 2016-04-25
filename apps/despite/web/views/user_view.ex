@@ -5,8 +5,12 @@ defmodule Despite.UserView do
     %{data: render_many(users, Despite.UserView, "user.json")}
   end
 
-  def render("show.json", %{user: user}) do
-    %{data: render_one(user, Despite.UserView, "user.json")}
+  def render("show.json", %{user: user, jwt: jwt, existing_user: existing_user}) do
+    %{
+      jwt: jwt,
+      user: render_one(user, Despite.UserView, "user.json"),
+      existing_user: existing_user
+    }
   end
 
   def render("user.json", %{user: user}) do
