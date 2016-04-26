@@ -26,6 +26,7 @@ defmodule Despite.ConnCase do
       import Ecto.Query, only: [from: 1, from: 2]
 
       import Despite.Router.Helpers
+      import Despite.TestHelpers
 
       # The default endpoint for testing
       @endpoint Despite.Endpoint
