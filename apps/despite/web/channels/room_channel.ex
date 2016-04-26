@@ -15,6 +15,28 @@ defmodule Despite.RoomChannel do
     {:ok, resp, assign(socket, :room_id, room_id)}
   end
 
+  def broadcast_message(socket, message) do
+    message = Repo.preload(message, :sender)
+    rendered_message = Phoenix.View.render(Despite.MessageView, "message.json", %{
+      message: message
+      })
+      broadcast! socket, "new_message", rendered_message
+    end
+
+  def handle_in("new_message", payload, socket) do
+    changeset = socket.assigns.current_user
+    |> build_assoc(:messages, room_id: socket.assigns.room_id)
+    |> Despite.Message.changeset(payload)
+
+    case Repo.insert(changeset) do
+      {:ok, message} ->
+        broadcast_message(socket, message)
+        {:reply, :ok, socket}
+        {:error, changeset} ->
+          {:reply, {:error, %{errors: changeset}}, socket}
+        end
+      end
+
   def get_current_room(room_id) do
     # TODO need last 10
     # TODO need to generate messages
@@ -25,31 +47,10 @@ defmodule Despite.RoomChannel do
     Repo.all(
       from message in assoc(room, :messages),
       # where: a.id > ^last_seen_id,
-      order_by: [desc: message.inserted_at],
+      order_by: [desc: message.inserted_at, desc: message.id],
       limit: 10,
       preload: [:sender]
     )
-  end
-
-  # Channels can be used in a request/response fashion
-  # by sending replies to requests from the client
-  def handle_in("ping", payload, socket) do
-    {:reply, {:ok, payload}, socket}
-  end
-
-  # It is also common to receive messages from the client and
-  # broadcast to everyone in the current topic (rooms:lobby).
-  def handle_in("shout", payload, socket) do
-    broadcast socket, "shout", payload
-    {:noreply, socket}
-  end
-
-  # This is invoked every time a notification is being broadcast
-  # to the client. The default implementation is just to push it
-  # downstream but one could filter or change the event.
-  def handle_out(event, payload, socket) do
-    push socket, event, payload
-    {:noreply, socket}
   end
 
   # Add authorization logic here as required.

@@ -5,8 +5,8 @@ defmodule Despite.User do
     field :phone_number, :string
     field :gender, :string
     field :username, :string
-    has_many :rooms, Despite.Room
-    has_many :messages, Despite.Message
+    has_many :rooms, Despite.Room, foreign_key: :admin_id
+    has_many :messages, Despite.Message, foreign_key: :sender_id
 
     timestamps
   end

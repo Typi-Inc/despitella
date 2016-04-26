@@ -6,14 +6,13 @@ defmodule Despite.UserView do
   end
 
   def render("show.json", %{user: user, jwt: jwt, existing_user: existing_user}) do
-    %{
-      jwt: jwt,
+    %{jwt: jwt,
       user: render_one(user, Despite.UserView, "user.json"),
-      existing_user: existing_user
-    }
+      existing_user: existing_user}
   end
 
   def render("user.json", %{user: user}) do
+    IO.puts "hello from user view #{inspect user}"
     %{id: user.id,
       phone_number: user.phone_number,
       gender: user.gender,
